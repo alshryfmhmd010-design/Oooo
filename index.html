@@ -31,10 +31,11 @@
             border-radius: 30px;
             box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
             text-align: center;
-            max-width: 400px;
+            max-width: 450px;
             width: 90%;
             border: 2px solid white;
             z-index: 10;
+            position: relative;
         }
 
         .gif-container img {
@@ -55,10 +56,9 @@
         .btn-group {
             display: flex;
             justify-content: center;
+            align-items: center; /* لضمان التوسط */
             gap: 20px;
-            position: relative;
-            height: 60px;
-            align-items: center;
+            min-height: 100px; /* مساحة لنمو الزر */
         }
 
         button {
@@ -68,28 +68,24 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         #yesBtn {
             background-color: var(--primary-red);
             color: white;
-        }
-
-        #yesBtn:hover {
-            background-color: var(--hover-red);
-            transform: scale(1.1);
+            position: relative;
+            z-index: 11; /* ليبقى فوق زر لا إذا تداخلا */
         }
 
         #noBtn {
             background-color: #f8f9fa;
             color: #6c757d;
-            position: absolute;
+            z-index: 12;
             white-space: nowrap;
         }
 
-        /* واجهة النجاح */
         #success-ui {
             display: none;
             animation: fadeIn 0.8s ease;
@@ -106,6 +102,13 @@
             pointer-events: none;
             z-index: 0;
         }
+
+        @keyframes floatUp {
+            to {
+                transform: translateY(-110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -115,7 +118,7 @@
     <div class="card" id="main-card">
         <div id="question-ui">
             <div class="gif-container">
-                <img id="main-gif" src="mine.gif" alt="Asking Bear">
+                <img id="main-gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/co6tN0t9i43EulrLQu/giphy.gif" alt="Asking Bear">
             </div>
             <h1>Will you be my Valentine? 🥺💖</h1>
             <div class="btn-group">
@@ -126,7 +129,7 @@
 
         <div id="success-ui">
             <div class="gif-container">
-                <img src="to.gif" alt="Hugging Bears">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/L4lvBps6nLpBXZ8n1K/giphy.gif" alt="Hugging Bears">
             </div>
             <h1>Hehehe, I knew it! <br> I love you! ✨❤️🥰</h1>
         </div>
@@ -137,10 +140,11 @@
         const yesBtn = document.getElementById('yesBtn');
         const questionUI = document.getElementById('question-ui');
         const successUI = document.getElementById('success-ui');
+        
+        let yesScale = 1; // مقياس حجم زر نعم
 
-        // وظيفة تجعل زر "No" يهرب بذكاء
-        const teleport = () => {
-            // حساب المساحة المتاحة في الشاشة مع ترك هامش
+        const handleNoAction = () => {
+            // 1. جعل زر "لا" يهرب
             const padding = 50;
             const maxWidth = window.innerWidth - noBtn.offsetWidth - padding;
             const maxHeight = window.innerHeight - noBtn.offsetHeight - padding;
@@ -151,16 +155,17 @@
             noBtn.style.position = 'fixed';
             noBtn.style.left = `${randomX}px`;
             noBtn.style.top = `${randomY}px`;
-            
-            // جعل الزر يصغر قليلاً في كل مرة يحاول الهرب!
-            const currentScale = parseFloat(window.getComputedStyle(noBtn).getPropertyValue('transform').split(',')[3]) || 1;
-            if(currentScale > 0.5) noBtn.style.transform = `scale(${currentScale - 0.05})`;
+
+            // 2. تكبير زر "نعم"
+            yesScale += 0.15; // مقدار التكبير في كل مرة
+            yesBtn.style.transform = `scale(${yesScale})`;
         };
 
-        noBtn.addEventListener('mouseover', teleport);
+        // أحداث زر "لا"
+        noBtn.addEventListener('mouseover', handleNoAction);
         noBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            teleport();
+            handleNoAction();
         });
 
         // عند الضغط على Yes
@@ -171,7 +176,6 @@
             createHearts();
         });
 
-        // إضافة قلوب تتطاير في الخلفية عند الفوز
         function createHearts() {
             for(let i=0; i<30; i++) {
                 const heart = document.createElement('div');
@@ -185,14 +189,5 @@
             }
         }
     </script>
-
-    <style>
-        @keyframes floatUp {
-            to {
-                transform: translateY(-110vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-    </style>
 </body>
 </html>
