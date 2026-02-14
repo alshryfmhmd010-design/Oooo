@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine? 🌹</title>
+    <title>Be My Valentine? 💖</title>
     <style>
         :root {
-            --primary-red: #ff4d6d;
-            --hover-red: #c9184a;
-            --bg-pink: #fff0f3;
+            /* ألوان جديدة أكثر فخامة */
+            --main-bg: #1a1a2e; /* خلفية داكنة غامضة وفخمة */
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --yes-color: #ff0044; /* أحمر ناري */
+            --no-color: #ffcc00;  /* أصفر فاقع ليكون واضحاً عند الهروب */
+            --text-color: #ffffff;
         }
 
         body {
@@ -18,107 +21,109 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: var(--bg-pink);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background 0.5s ease;
+            /* تدرج لوني فخم */
+            background: radial-gradient(circle, #2d0036 0%, #000000 100%);
+            font-family: 'Poppins', sans-serif;
             overflow: hidden;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
             padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
+            border-radius: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             text-align: center;
             max-width: 450px;
             width: 90%;
-            border: 2px solid white;
+            border: 1px solid rgba(255,255,255,0.1);
             z-index: 10;
-            position: relative;
         }
 
         .gif-container img {
-            width: 220px;
-            height: 220px;
+            width: 200px;
+            height: 200px;
             object-fit: contain;
             border-radius: 20px;
             margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
         }
 
         h1 {
-            color: var(--primary-red);
-            font-size: 28px;
+            color: var(--text-color);
+            font-size: 26px;
             margin-bottom: 30px;
-            line-height: 1.4;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .btn-group {
             display: flex;
             justify-content: center;
-            align-items: center; /* لضمان التوسط */
+            align-items: center;
             gap: 20px;
-            min-height: 100px; /* مساحة لنمو الزر */
+            min-height: 120px;
         }
 
         button {
-            padding: 12px 35px;
-            font-size: 18px;
-            font-weight: bold;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: 800;
             border: none;
-            border-radius: 50px;
+            border-radius: 15px;
             cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         #yesBtn {
-            background-color: var(--primary-red);
+            background: var(--yes-color);
             color: white;
-            position: relative;
-            z-index: 11; /* ليبقى فوق زر لا إذا تداخلا */
+            box-shadow: 0 10px 20px rgba(255, 0, 68, 0.4);
+            z-index: 100; /* دائماً فوق الكل */
         }
 
         #noBtn {
-            background-color: #f8f9fa;
-            color: #6c757d;
-            z-index: 12;
+            background: var(--no-color);
+            color: #000;
+            box-shadow: 0 10px 20px rgba(255, 204, 0, 0.3);
             white-space: nowrap;
+            z-index: 10;
         }
 
         #success-ui {
             display: none;
-            animation: fadeIn 0.8s ease;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
-        .floating-hearts {
+        /* قلوب الخلفية */
+        .heart {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            color: var(--yes-color);
+            font-size: 20px;
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
+            animation: fall linear forwards;
         }
 
-        @keyframes floatUp {
-            to {
-                transform: translateY(-110vh) rotate(360deg);
-                opacity: 0;
-            }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="floating-hearts" id="hearts-bg"></div>
+    <div id="hearts-container"></div>
 
     <div class="card" id="main-card">
         <div id="question-ui">
             <div class="gif-container">
-                <img id="main-gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/co6tN0t9i43EulrLQu/giphy.gif" alt="Asking Bear">
+                <img id="main-gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/co6tN0t9i43EulrLQu/giphy.gif" alt="Cute Bear">
             </div>
             <h1>Will you be my Valentine? 🥺💖</h1>
             <div class="btn-group">
@@ -131,7 +136,7 @@
             <div class="gif-container">
                 <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/L4lvBps6nLpBXZ8n1K/giphy.gif" alt="Hugging Bears">
             </div>
-            <h1>Hehehe, I knew it! <br> I love you! ✨❤️🥰</h1>
+            <h1 style="color: #ffedff;">I KNEW IT! <br> I LOVE YOU! ✨❤️🥰</h1>
         </div>
     </div>
 
@@ -141,52 +146,45 @@
         const questionUI = document.getElementById('question-ui');
         const successUI = document.getElementById('success-ui');
         
-        let yesScale = 1; // مقياس حجم زر نعم
+        let yesScale = 1;
 
-        const handleNoAction = () => {
-            // 1. جعل زر "لا" يهرب
-            const padding = 50;
-            const maxWidth = window.innerWidth - noBtn.offsetWidth - padding;
-            const maxHeight = window.innerHeight - noBtn.offsetHeight - padding;
-
-            const randomX = Math.max(padding, Math.floor(Math.random() * maxWidth));
-            const randomY = Math.max(padding, Math.floor(Math.random() * maxHeight));
-
+        const moveNoButton = () => {
+            // هروب الزر
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
             noBtn.style.position = 'fixed';
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
 
-            // 2. تكبير زر "نعم"
-            yesScale += 0.15; // مقدار التكبير في كل مرة
+            // تكبير زر نعم بشكل أسرع (زيادة 0.4 في كل مرة)
+            yesScale += 0.4; 
             yesBtn.style.transform = `scale(${yesScale})`;
         };
 
-        // أحداث زر "لا"
-        noBtn.addEventListener('mouseover', handleNoAction);
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            handleNoAction();
-        });
+        noBtn.addEventListener('mouseover', moveNoButton);
+        noBtn.addEventListener('click', moveNoButton); // للأمان في حال ضغط بسرعة
 
-        // عند الضغط على Yes
         yesBtn.addEventListener('click', () => {
             questionUI.style.display = 'none';
             successUI.style.display = 'block';
-            document.body.style.background = '#ffb3c1';
-            createHearts();
+            document.body.style.background = 'radial-gradient(circle, #5e001f 0%, #1a1a2e 100%)';
+            startHearts();
         });
 
-        function createHearts() {
-            for(let i=0; i<30; i++) {
+        // مطر من القلوب
+        function startHearts() {
+            setInterval(() => {
                 const heart = document.createElement('div');
+                heart.classList.add('heart');
                 heart.innerHTML = '❤️';
-                heart.style.position = 'fixed';
                 heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.top = '100vh';
-                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-                heart.style.animation = `floatUp ${Math.random() * 3 + 2}s linear forwards`;
-                document.getElementById('hearts-bg').appendChild(heart);
-            }
+                heart.style.top = '-20px';
+                heart.style.duration = (Math.random() * 3 + 2) + 's';
+                document.getElementById('hearts-container').appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 5000);
+            }, 100);
         }
     </script>
 </body>
